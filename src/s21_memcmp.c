@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "s21_string.h"
 
 // Сравнивает первые n байтов str1 и str2.
 // @gylberdo

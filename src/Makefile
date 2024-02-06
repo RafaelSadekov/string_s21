@@ -1,12 +1,12 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 GCOV_FLAGS = -fprofile-arcs -ftest-coverage
-SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_strlen.c s21_strncmp.c
-OBJ = $(SRC:.c=.o)
-TEST_LIBS = main_test.c
+SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_strlen.c s21_strncmp.c main_test.c
+OBJ = $(SOURCES:.c=.o)
+TEST_LIBS = s21_main_test.c
 LIB_NAME = s21_string.a
-EXEC = test_runner
-TEST2_EXEC = test_runner2
+EXEC = test
+TEST2_EXEC = main_test
 
 all: $(LIB_NAME) $(EXEC) 
 
@@ -17,12 +17,10 @@ $(LIB_NAME): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(EXEC): $(TEST_LIBS)
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -lmys21string $(CHECK_LIBS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string $(CHECK_LIBS)
 
 $(TEST2_EXEC): main_test.c $(LIB_NAME)
-	ar rcs $@ $^ 
-	$(CC) $(CFLAGS) -o $@ $^
-	rm -f $(OBJ) $(LIB_NAME)
+	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string
 
 gcov_report: clean $(EXEC)
 	mkdir -p coverage
