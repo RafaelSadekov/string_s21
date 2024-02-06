@@ -20,7 +20,8 @@ $(EXEC): $(TEST_LIBS)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string $(CHECK_LIBS)
 
 $(TEST2_EXEC): main_test.c $(LIB_NAME)
-	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string
+	$(CC) $(CFLAGS) -o $@ main_test.c -L. -l:s21_string.a
+	rm -f $(OBJ) $(LIB_NAME)
 
 gcov_report: clean $(EXEC)
 	mkdir -p coverage
