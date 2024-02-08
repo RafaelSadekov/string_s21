@@ -6,14 +6,43 @@
 
 #define s21_NULL (void *)0
 
-size_t s21_strlen(const char *str);
 
 int main();
-int s21_memcmp(const void *str1, const void *str2, size_t n);
-void *s21_memchr(const void *str, int c, size_t count);
-void *s21_memcpy(void *dest, const void *src, size_t n);
+/* Функции копирования */
+void *s21_memcpy(void *dest, const void *src, size_t n); //Скопировать блок данных из памяти.
+// memmove	Переместить блок данных в память.
+// strcpy	Скопировать строку.
+// strncpy	Скопировать n символов строки.
+
+/*  Функции объединения (конкатенации) */
+// strcat	Объединение строк.
+// strncat	Добавление n символов к строке.
+
+/* Функции отношения (сравнения) */
+int s21_memcmp(const void *str1, const void *str2, size_t n); // Сравнение двух блоков памяти.
+// strcmp	Сравнение двух строк
+// strcoll	Сравнение двух строк по категориям.
+int s21_strncmp(const char *str1, const char *str2, size_t n); 
+// Сравнение n первых символов двух строк
+// strxfrm	Преобразование строки, с учетом локали.
+
+/* Функции поиска */
+void *s21_memchr(const void *str, int c, size_t count); //Поиск символа в блоке памяти
+// strchr	Найти первое вхождение символа в строке.
+// strcspn	Выполняет поиск первого вхождения в строку str1 любого из символов строки str2, и возвращает количество символов до найденного первого вхождения.
+// strpbrk	Выполняет поиск первого вхождения в строку str1 любого из символов строки str2, и возвращает указатель на  найденный символ.
+// strrchr	Поиск последнего вхождения указанного символа.
+// strspn	Поиск символов строки str2 в строке str1. Возвращает длину начального участка строки str1, который состоит только из символов строки str2.
+// strstr	 Функция ищет первое вхождение подстроки str2 в строке str1.
+// strtok	Поиск лексем в строке, используя разделители.
+/* Другие */
 void *s21_memset(void *str, int c, size_t n);
+char *strerror(int errnum);
+size_t s21_strlen(const char *str);
 
-int s21_strncmp(const char *str1, const char *str2, size_t n);
-
+/*
+memset	Заполнить n байтов блока памяти указанным символом.
+strerror	Интерпретация кодов ошибок в понятные сообщения об ошибках
+strlen	Определить длину строки.
+*/
 #endif
