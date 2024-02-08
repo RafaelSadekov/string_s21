@@ -17,6 +17,7 @@ char *s21_strncpy(char *dest, const char *src, size_t n);
 
 /*  Функции объединения (конкатенации) */
 // strcat	Объединение строк.
+char *s21_strncat(char *dest, const char *src, size_t n);
 //5 strncat	Добавление n символов к строке.
 
 /* Функции отношения (сравнения) */
