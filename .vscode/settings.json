@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "config": "ssh_config",
-        "string.h": "c"
+        "string.h": "c",
+        "cerrno": "c",
+        "s21_string.h": "c"
     }
 }
