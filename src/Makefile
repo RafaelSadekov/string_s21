@@ -4,7 +4,7 @@ GCOV_FLAGS = -fprofile-arcs -ftest-coverage
 SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_strncmp.c s21_strchr.c main_test.c
 OBJ = $(SOURCES:.c=.o)
 TEST_LIBS = s21_main_test.c
-LIB_NAME = s21_string.a
+LIB_NAME = libs21_string.a
 EXEC = test
 TEST2_EXEC = main_test
 
