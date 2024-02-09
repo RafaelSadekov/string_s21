@@ -8,7 +8,7 @@ LIB_NAME = libs21_string.a
 EXEC = test
 TEST2_EXEC = main_test
 
-all: $(LIB_NAME) $(EXEC) 
+all: clean $(LIB_NAME) $(EXEC) 
 
 $(LIB_NAME): $(OBJ)
 	ar rcs $@ $^
