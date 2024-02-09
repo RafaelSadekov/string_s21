@@ -1,11 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 GCOV_FLAGS = -fprofile-arcs -ftest-coverage
-SOURCES = s21_strlen.c s21_strncmp.c main_test.c
-SOURCES2 = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_strncmp.c s21_strchr.c main_test.c
+SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_strncmp.c s21_strchr.c main_test.c
 OBJ = $(SOURCES:.c=.o)
 TEST_LIBS = s21_main_test.c
-LIB_NAME = libs21_string.a
+LIB_NAME = s21_string.a
 EXEC = test
 TEST2_EXEC = main_test
 
@@ -21,7 +20,7 @@ $(EXEC): $(TEST_LIBS)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string $(CHECK_LIBS)
 
 $(TEST2_EXEC): main_test.c $(LIB_NAME)
-	$(CC) $(CFLAGS) -o $@ main_test.c -L. -l:s21_string.a
+	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string
 	rm -f $(OBJ) $(LIB_NAME)
 
 gcov_report: clean $(EXEC)
