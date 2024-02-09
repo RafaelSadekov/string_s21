@@ -15,4 +15,10 @@ void *s21_memcpy(void *dest, const void *src, size_t n) {
 копирует n байтов из строки src в строку dest. Мы используем цикл для
 копирования байтов один за другим. После завершения копирования мы возвращаем
 указатель на начало строки dest.
+
+MEMPCPY (void *dest, const void *src, size_t len)
+  34 {
+  35   return memcpy (dest, src, len) + len;
+  36 }
+
 */
