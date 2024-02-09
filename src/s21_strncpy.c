@@ -1,8 +1,13 @@
 #include "s21_string.h"
 
 char *s21_strncpy(char *dest, const char *src, size_t n) {
-    size_t size = s21_strnlen (src, n);
-    
+    size_t size = s21_strlen(dest);
+    if (size < n){
+      n = size;
+    }
+    if (src){
+
+    }
 }
 
 // char *strncpy(char *dest, const char *src, size_t n)	

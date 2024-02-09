@@ -2,7 +2,7 @@
 
 /* Интерпретация кодов ошибок в понятные сообщения об ошибках */
 char *s21_strerror(int errnum) {
-int saved_errno = errno;
+int saved_errno = 0;
 
 }
 
