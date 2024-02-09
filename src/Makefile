@@ -5,19 +5,26 @@ SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_s
 OBJ = $(SOURCES:.c=.o)
 TEST_LIBS = s21_main_test.c
 LIB_NAME = libs21_string.a
+LIB_EXEC = s21_string.a
 EXEC = test
 TEST2_EXEC = main_test
 
-all: clean $(LIB_NAME) $(EXEC) 
+OS=$(shell uname -s)
 
-$(LIB_NAME): $(OBJ)
-	ar rcs $@ $^
+all: $(LIB_EXEC) $(EXEC) 
+
+$(LIB_EXEC): $(OBJ)
+	ar rcs $(LIB_NAME) $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(EXEC): $(TEST_LIBS)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lsubunit -lm
+	rm -f $(OBJ) $(LIB_NAME)
+
+testmac: $(LIB_EXEC) $(TEST_LIBS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lm
 	rm -f $(OBJ) $(LIB_NAME)
 
 $(TEST2_EXEC): main_test.c $(LIB_NAME)
@@ -31,6 +38,8 @@ gcov_report: clean $(EXEC)
 	gcov $(GCOV_FLAGS) $(SOURCES)
 	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory coverage
+
+rebuild: clean all
 
 clean:
 	rm -f $(OBJ) $(EXEC) $(TEST2_EXEC) $(LIB_NAME) *.gcda *.gcno *.gcov *.info
