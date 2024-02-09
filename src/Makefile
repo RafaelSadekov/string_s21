@@ -17,7 +17,8 @@ $(LIB_NAME): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(EXEC): $(TEST_LIBS)
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string $(CHECK_LIBS)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lsubunit -lm
+	rm -f $(OBJ) $(LIB_NAME)
 
 $(TEST2_EXEC): main_test.c $(LIB_NAME)
 	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string

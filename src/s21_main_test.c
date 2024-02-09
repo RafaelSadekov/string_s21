@@ -1,8 +1,8 @@
-#include "s21_string.h"
-
 #include <check.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "s21_string.h"
 
 START_TEST(s21_memcmp_1) {
   size_t n1 = 3;
@@ -50,15 +50,14 @@ Suite *s21_memcmp_test(void) {
   return s;
 }
 
-
 int main(void) {
   int number_failed;
-  Suite *suite = s21_math_suite();
-  SRunner *runner = srunner_create(suite);
-
-  srunner_run_all(runner, CK_NORMAL);
-  number_failed = srunner_ntests_failed(runner);
-  srunner_free(runner);
-
-  return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  Suite *s = s21_memcmp_test();
+  SRunner *sr = srunner_create(s);  //  Создаем объект для запуска тестов
+  srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
+  number_failed =
+      srunner_ntests_failed(sr);  // Получаем количество проваленных тестов
+  srunner_free(sr);  // Освобождаем ресурсы
+  return (number_failed == 0) ? EXIT_SUCCESS
+                              : EXIT_FAILURE;  // Возвращаем статус выполнения
 }
