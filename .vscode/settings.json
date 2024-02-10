@@ -3,6 +3,7 @@
         "config": "ssh_config",
         "string.h": "c",
         "s21_string.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "editor.renderWhitespace": "all"
     }
 }
