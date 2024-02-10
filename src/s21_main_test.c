@@ -64,7 +64,7 @@ START_TEST(s21_strlen_10) {
 }
 END_TEST
 
-Suite *s21_strle_test(void) {
+Suite *s21_strlen_test(void) {
   Suite *s = suite_create("s21_strlen");
   TCase *tc = tcase_create("case_s21_strlen");
   tcase_add_test(tc, s21_strlen_1);
@@ -123,21 +123,9 @@ START_TEST(s21_memcmp_5) {
 }
 END_TEST
 
-Suite *s21_string_suite(void) {
-  Suite *suite = suite_create("s21_string");
-  TCase *tc_strlen = tcase_create("s21_strlen");
-  TCase *tc_memcmp = tcase_create("s21_memcmp");
-
-  tcase_add_test(tc_strlen, s21_strlen_1);
-  tcase_add_test(tc_strlen, s21_strlen_2);
-  tcase_add_test(tc_strlen, s21_strlen_3);
-  tcase_add_test(tc_strlen, s21_strlen_4);
-  tcase_add_test(tc_strlen, s21_strlen_5);
-  tcase_add_test(tc_strlen, s21_strlen_6);
-  tcase_add_test(tc_strlen, s21_strlen_7);
-  tcase_add_test(tc_strlen, s21_strlen_8);
-  tcase_add_test(tc_strlen, s21_strlen_9);
-  tcase_add_test(tc_strlen, s21_strlen_10);
+Suite *s21_memcmp_test(void) {
+  Suite *suite = suite_create("s21_memcmp");
+  TCase *tc_memcmp = tcase_create("case_s21_memcmp");
 
   tcase_add_test(tc_memcmp, s21_memcmp_1);
   tcase_add_test(tc_memcmp, s21_memcmp_2);
@@ -145,16 +133,76 @@ Suite *s21_string_suite(void) {
   tcase_add_test(tc_memcmp, s21_memcmp_4);
   tcase_add_test(tc_memcmp, s21_memcmp_5);
 
-  suite_add_tcase(suite, tc_strlen);
   suite_add_tcase(suite, tc_memcmp);
 
   return suite;
 }
 
+START_TEST(test_memchr_found) {
+  const char str[] = "Hello, world!";
+  int c = 'w';
+  ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
+                   memchr(str, c, strlen(str)));
+}
+END_TEST
+
+// использование strlen для определения длины строки в аргументах функций
+// s21_memchr и memchr является предпочтительным. Это обеспечивает, что обе
+// функции работают с одинаковым диапазоном памяти при сравнении, минимизируя
+// влияние внешних факторов на результаты теста.
+
+START_TEST(test_memchr_not_found) {
+  const char str[] = "Hello, world!";
+  int c = 'x';
+  ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
+                   memchr(str, c, strlen(str)));
+}
+END_TEST
+
+START_TEST(test_memchr_zero_length) {
+  const char str[] = "Hello, world!";
+  int c = 'H';
+  ck_assert_ptr_eq(s21_memchr(str, c, 0), memchr(str, c, 0));
+}
+END_TEST
+
+START_TEST(test_memchr_first_char) {
+  const char str[] = "Hello, world!";
+  int c = 'H';
+  ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
+                   memchr(str, c, strlen(str)));
+}
+END_TEST
+
+START_TEST(test_memchr_last_char) {
+  const char str[] = "Hello, world!";
+  int c = '!';
+  ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
+                   memchr(str, c, strlen(str)));
+}
+END_TEST
+
+Suite *s21_memchr_test(void) {
+  Suite *s = suite_create("s21_memchr");
+  TCase *tc_core = tcase_create("case_s21_memchr");
+
+  tcase_add_test(tc_core, test_memchr_found);
+  tcase_add_test(tc_core, test_memchr_not_found);
+  tcase_add_test(tc_core, test_memchr_zero_length);
+  tcase_add_test(tc_core, test_memchr_first_char);
+  tcase_add_test(tc_core, test_memchr_last_char);
+
+  suite_add_tcase(s, tc_core);
+  return s;
+}
+
 int main(void) {
   int number_failed;
-  Suite *s = s21_string_suite();
-  SRunner *sr = srunner_create(s);  //  Создаем объект для запуска тестов
+  SRunner *sr = srunner_create(NULL);  //  Создаем объект для запуска тестов
+
+  srunner_add_suite(sr, s21_strlen_test());
+  srunner_add_suite(sr, s21_memcmp_test());
+  srunner_add_suite(sr, s21_memchr_test());
   srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
   number_failed =
       srunner_ntests_failed(sr);  // Получаем количество проваленных тестов
