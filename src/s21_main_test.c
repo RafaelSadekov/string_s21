@@ -184,15 +184,75 @@ END_TEST
 
 Suite *s21_memchr_test(void) {
   Suite *s = suite_create("s21_memchr");
-  TCase *tc_core = tcase_create("case_s21_memchr");
+  TCase *tc_memchr = tcase_create("case_s21_memchr");
 
-  tcase_add_test(tc_core, test_memchr_found);
-  tcase_add_test(tc_core, test_memchr_not_found);
-  tcase_add_test(tc_core, test_memchr_zero_length);
-  tcase_add_test(tc_core, test_memchr_first_char);
-  tcase_add_test(tc_core, test_memchr_last_char);
+  tcase_add_test(tc_memchr, test_memchr_found);
+  tcase_add_test(tc_memchr, test_memchr_not_found);
+  tcase_add_test(tc_memchr, test_memchr_zero_length);
+  tcase_add_test(tc_memchr, test_memchr_first_char);
+  tcase_add_test(tc_memchr, test_memchr_last_char);
 
-  suite_add_tcase(s, tc_core);
+  suite_add_tcase(s, tc_memchr);
+  return s;
+}
+
+START_TEST(test_memcpy_normal_string) {
+  char src[] = "Test string";
+  char dest[20];
+  s21_memcpy(dest, src,
+             strlen(src) + 1);  // +1 для копирования нуль-терминатора
+  ck_assert_str_eq(dest, src);
+}
+END_TEST
+
+START_TEST(test_memcpy_without_overlap) {
+  char src[] = "Example text";
+  char dest[20];
+  s21_memcpy(dest, src,
+             strlen(src) + 1);  // +1 для копирования нуль-терминатора
+  ck_assert_str_eq(dest, src);
+}
+END_TEST
+
+START_TEST(test_memcpy_zero_bytes) {
+  char src[] = "Non-empty";
+  char dest[20] = "Initial";
+  s21_memcpy(dest, src, 0);  // Копирование 0 байтов
+  ck_assert_str_eq(dest, "Initial");
+}
+END_TEST
+
+START_TEST(test_memcpy_large_data) {
+  char src[1024];
+  char dest[1024];
+  // Инициализация src некоторыми данными
+  for (int i = 0; i < 1024; i++) {
+    src[i] = (char)(i % 256);
+  }
+  s21_memcpy(dest, src, sizeof(src));
+  ck_assert_mem_eq(dest, src, sizeof(src));
+}
+END_TEST
+
+START_TEST(test_memcpy_binary_data) {
+  unsigned char src[] = {0xDE, 0xAD, 0xBE, 0xEF};
+  unsigned char dest[4];
+  s21_memcpy(dest, src, sizeof(src));
+  ck_assert_mem_eq(dest, src, sizeof(src));
+}
+END_TEST
+
+Suite *s21_memcpy_test(void) {
+  Suite *s = suite_create("s21_memcpy");
+  TCase *tc_memcpy = tcase_create("case_s21_memcpy");
+
+  tcase_add_test(tc_memcpy, test_memcpy_normal_string);
+  tcase_add_test(tc_memcpy, test_memcpy_overlap);
+  tcase_add_test(tc_memcpy, test_memcpy_zero_bytes);
+  tcase_add_test(tc_memcpy, test_memcpy_large_data);
+  tcase_add_test(tc_memcpy, test_memcpy_binary_data);
+
+  suite_add_tcase(s, tc_memcpy);
   return s;
 }
 
@@ -203,6 +263,7 @@ int main(void) {
   srunner_add_suite(sr, s21_strlen_test());
   srunner_add_suite(sr, s21_memcmp_test());
   srunner_add_suite(sr, s21_memchr_test());
+  srunner_add_suite(sr, s21_memcpy_test());
   srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
   number_failed =
       srunner_ntests_failed(sr);  // Получаем количество проваленных тестов
