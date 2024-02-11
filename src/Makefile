@@ -9,9 +9,11 @@ EXEC = test
 TEST2_EXEC = main_test
 
 LIBS=-lcheck
+OPEN = open
 OS := $(shell uname -s)
 ifeq ($(OS),Linux)
 LIBS += -lsubunit -lm -lrt -lpthread -D_GNU_SOURCE
+OPEN = xdg-open
 endif
 
 .PHONY: all check clean cppcheck test gcov_report
@@ -38,7 +40,7 @@ gcov_report: clean s21_string.a test
 	./$(EXEC)
 	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory coverage
-	open coverage/index.html
+	$(OPEN) coverage/index.html
 	rm -rf *.g* gcov_rep* coverage.info
 
 rebuild: clean all
