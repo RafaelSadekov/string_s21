@@ -5,21 +5,20 @@ SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_s
 OBJ = $(SOURCES:.c=.o)
 TEST_LIBS = s21_main_test.c
 LIB_NAME = libs21_string.a
-LIB_EXEC = s21_string.a
 EXEC = test
 TEST2_EXEC = main_test
 
 OS=$(shell uname -s)
 
-all: $(LIB_EXEC) $(EXEC) 
+all: clean s21_string.a test gcov_report
 
-$(LIB_EXEC): $(OBJ)
+s21_string.a: $(OBJ)
 	ar rcs $(LIB_NAME) $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(EXEC): $(TEST_LIBS)
+test: $(TEST_LIBS)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lsubunit -lm
 	rm -f $(OBJ) $(LIB_NAME)
 	./test

@@ -4,81 +4,36 @@
 
 #include "s21_string.h"
 
-START_TEST(s21_strlen_1) {
-  const char str[] = "";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
+START_TEST(test_s21_strlen) {
+  const char str1[] = "";
+  const char str2[] = "Hello";
+  const char str3[] = "A";
+  const char str4[] = "This is a test.";
+  const char str5[] = "Another test with spaces";
+  const char str6[] = "1234567890";
+  const char str7[] = "Line\nNew line";
+  const char str8[] = "\0Hidden";
+  char str9[1024] = "Long string with a lot of characters...";
+  const char str10[] = "Ends with space ";
+  ck_assert_uint_eq(s21_strlen(str1), strlen(str1));
+  ck_assert_uint_eq(s21_strlen(str2), strlen(str2));
+  ck_assert_uint_eq(s21_strlen(str3), strlen(str3));
+  ck_assert_uint_eq(s21_strlen(str4), strlen(str4));
+  ck_assert_uint_eq(s21_strlen(str5), strlen(str5));
+  ck_assert_uint_eq(s21_strlen(str6), strlen(str6));
+  ck_assert_uint_eq(s21_strlen(str7), strlen(str7));
+  ck_assert_uint_eq(s21_strlen(str8), strlen(str8));
+  ck_assert_uint_eq(s21_strlen(str9), strlen(str9));
+  ck_assert_uint_eq(s21_strlen(str10), strlen(str10));
 }
 END_TEST
 
-START_TEST(s21_strlen_2) {
-  const char str[] = "Hello";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_3) {
-  const char str[] = "A";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_4) {
-  const char str[] = "This is a test.";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_5) {
-  const char str[] = "Another test with spaces";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_6) {
-  const char str[] = "1234567890";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_7) {
-  const char str[] = "Line\nNew line";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_8) {
-  const char str[] = "\0Hidden";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_9) {
-  char str[1024] = "Long string with a lot of characters...";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-START_TEST(s21_strlen_10) {
-  const char str[] = "Ends with space ";
-  ck_assert_uint_eq(s21_strlen(str), strlen(str));
-}
-END_TEST
-
-Suite *s21_strlen_test(void) {
-  Suite *s = suite_create("s21_strlen");
-  TCase *tc = tcase_create("case_s21_strlen");
-  tcase_add_test(tc, s21_strlen_1);
-  tcase_add_test(tc, s21_strlen_2);
-  tcase_add_test(tc, s21_strlen_3);
-  tcase_add_test(tc, s21_strlen_4);
-  tcase_add_test(tc, s21_strlen_5);
-  tcase_add_test(tc, s21_strlen_6);
-  tcase_add_test(tc, s21_strlen_7);
-  tcase_add_test(tc, s21_strlen_8);
-  tcase_add_test(tc, s21_strlen_9);
-  tcase_add_test(tc, s21_strlen_10);
-  suite_add_tcase(s, tc);
-  return s;
+Suite *suite_strlen(void) {
+  Suite *s1 = suite_create("s21_strlen");
+  TCase *tc_strlen = tcase_create("case_s21_strlen");
+  tcase_add_test(tc_strlen, test_s21_strlen);
+  suite_add_tcase(s1, tc_strlen);
+  return s1;
 }
 
 START_TEST(s21_memcmp_1) {
@@ -260,7 +215,7 @@ int main(void) {
   int number_failed;
   SRunner *sr = srunner_create(NULL);  //  Создаем объект для запуска тестов
 
-  srunner_add_suite(sr, s21_strlen_test());
+  srunner_add_suite(sr, suite_strlen());
   srunner_add_suite(sr, s21_memcmp_test());
   srunner_add_suite(sr, s21_memchr_test());
   srunner_add_suite(sr, s21_memcpy_test());
