@@ -22,10 +22,12 @@ $(LIB_EXEC): $(OBJ)
 $(EXEC): $(TEST_LIBS)
 	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lsubunit -lm
 	rm -f $(OBJ) $(LIB_NAME)
+	./test
 
 testmac: $(LIB_EXEC) $(TEST_LIBS)
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lm
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck
 	rm -f $(OBJ) $(LIB_NAME)
+	./testmac
 
 $(TEST2_EXEC): main_test.c $(LIB_NAME)
 	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string
@@ -36,13 +38,15 @@ gcov_report: clean $(LIB_EXEC) $(EXEC)
 	./$(EXEC)
 	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory coverage
+	open coverage/index.html
 	rm -rf *.g* gcov_rep* coverage.info
 
 gcov_report_mac: clean $(LIB_EXEC) testmac
 	mkdir -p coverage
-	./$(EXEC)
-	lcov --capture --directory . --output-file coverage.info
-	genhtml coverage.info --output-directory coverage
+	./testmac
+	lcov --capture --directory . --output-file test.info
+	genhtml test.info --output-directory coverage
+	open coverage/index.html
 	rm -rf *.g* gcov_rep* coverage.info
 
 rebuild: clean all

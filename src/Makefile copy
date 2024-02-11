@@ -1,0 +1,43 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror
+GCOV_FLAGS = -fprofile-arcs -ftest-coverage 
+# -fprofile-arcs генерирует информацию о том, сколько раз выполняется каждая ветвь программы. 
+# Эта информация хранится в файлах .gcda.
+# Флаг -ftest-coverage использует информацию, полученную с помощью -fprofile-arcs, 
+# и генерирует файлы .gcno, содержащие информацию о потоке управления. 
+# Эти файлы могут быть использованы инструментом Gcov для создания читаемых человеком .gcov файлов.
+SOURCES = s21_*.c  #добавить свои файлы
+OBJ = $(SOURCES:.c=.o)
+TEST_LIBS = s21_main_test.c
+LIB_NAME = libs21_string.a # такое название надо для -ls21_string без него неберет в оборот
+
+OS=$(shell uname -s) #это на будущее
+
+all: s21_string.a test
+
+s21_string.a: $(OBJ)
+	ar rcs $(LIB_NAME) $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+test: s21_string.a
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lsubunit -lm
+	rm -f $(OBJ) $(LIB_NAME)
+
+# -L. в папке
+# -l — это имя библиотеки, на которую вы хотите создать ссылку.
+# -lcheck это работает на маке -lsubunit -lm  без этого на линукси не работает
+
+gcov_report: clean s21_string.a test
+	mkdir -p coverage
+	./$(EXEC)
+	lcov --capture --directory . --output-file coverage.info
+	genhtml coverage.info --output-directory coverage
+	rm -rf *.g* gcov_rep* coverage.info
+
+rebuild: clean all
+
+clean:
+	rm -f $(OBJ) test $(LIB_NAME) *.gcda *.gcno *.gcov *.info
+	rm -rf coverage
