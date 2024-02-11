@@ -11,7 +11,11 @@ OBJ = $(SOURCES:.c=.o)
 TEST_LIBS = s21_main_test.c
 LIB_NAME = libs21_string.a # такое название надо для -ls21_string без него неберет в оборот
 
-OS=$(shell uname -s) #это на будущее
+LIBS=-lcheck
+OS := $(shell uname -s)
+ifeq ($(OS),Linux)
+LIBS += -lsubunit -lm -lrt -lpthread -D_GNU_SOURCE
+endif
 
 all: s21_string.a test
 
@@ -22,7 +26,7 @@ s21_string.a: $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 test: s21_string.a
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string -lcheck -lsubunit -lm
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) -o $@ $(TEST_LIBS) -L. -ls21_string $(LIBS)
 	rm -f $(OBJ) $(LIB_NAME)
 
 # -L. в папке
