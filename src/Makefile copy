@@ -31,10 +31,20 @@ test: s21_string.a
 
 gcov_report: clean s21_string.a test
 	mkdir -p coverage
-	./$(EXEC)
+	./test
 	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory coverage
 	rm -rf *.g* gcov_rep* coverage.info
+
+# Флаг -p гарантирует, что команда не вернёт ошибку, если каталог уже существует.
+# Использует lcov для сбора данных о покрытии кода тестами из текущего каталога (и подкаталогов) 
+# и сохраняет эти данные в файл coverage.info. 
+# Флаг --capture указывает lcov собрать данные о покрытии, 
+# а --directory . говорит ему искать данные о покрытии в текущем каталоге и его подкаталогах.
+# Команда genhtml берёт файл coverage.info, содержащий собранные lcov данные о покрытии, 
+# и генерирует из него наглядный HTML отчёт. 
+# Этот отчёт будет помещён в каталог coverage,
+
 
 rebuild: clean all
 
