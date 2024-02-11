@@ -247,7 +247,7 @@ Suite *s21_memcpy_test(void) {
   TCase *tc_memcpy = tcase_create("case_s21_memcpy");
 
   tcase_add_test(tc_memcpy, test_memcpy_normal_string);
-  tcase_add_test(tc_memcpy, test_memcpy_overlap);
+  tcase_add_test(tc_memcpy, test_memcpy_without_overlap);
   tcase_add_test(tc_memcpy, test_memcpy_zero_bytes);
   tcase_add_test(tc_memcpy, test_memcpy_large_data);
   tcase_add_test(tc_memcpy, test_memcpy_binary_data);

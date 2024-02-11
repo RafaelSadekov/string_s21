@@ -31,13 +31,19 @@ $(TEST2_EXEC): main_test.c $(LIB_NAME)
 	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string
 	rm -f $(OBJ) $(LIB_NAME)
 
-gcov_report: clean $(EXEC)
+gcov_report: clean $(LIB_EXEC) $(EXEC) 
 	mkdir -p coverage
 	./$(EXEC)
-	./$(TEST2_EXEC)
-	gcov $(GCOV_FLAGS) $(SOURCES)
 	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory coverage
+	rm -rf *.g* gcov_rep* coverage.info
+
+gcov_report_mac: clean $(LIB_EXEC) testmac
+	mkdir -p coverage
+	./$(EXEC)
+	lcov --capture --directory . --output-file coverage.info
+	genhtml coverage.info --output-directory coverage
+	rm -rf *.g* gcov_rep* coverage.info
 
 rebuild: clean all
 
