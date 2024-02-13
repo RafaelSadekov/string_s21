@@ -78,8 +78,8 @@ START_TEST(s21_memcmp_5) {
 }
 END_TEST
 
-Suite *s21_memcmp_test(void) {
-  Suite *suite = suite_create("s21_memcmp");
+Suite *suite_memcmp(void) {
+  Suite *s2 = suite_create("s21_memcmp");
   TCase *tc_memcmp = tcase_create("case_s21_memcmp");
 
   tcase_add_test(tc_memcmp, s21_memcmp_1);
@@ -88,9 +88,9 @@ Suite *s21_memcmp_test(void) {
   tcase_add_test(tc_memcmp, s21_memcmp_4);
   tcase_add_test(tc_memcmp, s21_memcmp_5);
 
-  suite_add_tcase(suite, tc_memcmp);
+  suite_add_tcase(s2, tc_memcmp);
 
-  return suite;
+  return s2;
 }
 
 START_TEST(test_memchr_found) {
@@ -137,8 +137,8 @@ START_TEST(test_memchr_last_char) {
 }
 END_TEST
 
-Suite *s21_memchr_test(void) {
-  Suite *s = suite_create("s21_memchr");
+Suite *suite_memchr(void) {
+  Suite *s3 = suite_create("s21_memchr");
   TCase *tc_memchr = tcase_create("case_s21_memchr");
 
   tcase_add_test(tc_memchr, test_memchr_found);
@@ -147,8 +147,8 @@ Suite *s21_memchr_test(void) {
   tcase_add_test(tc_memchr, test_memchr_first_char);
   tcase_add_test(tc_memchr, test_memchr_last_char);
 
-  suite_add_tcase(s, tc_memchr);
-  return s;
+  suite_add_tcase(s3, tc_memchr);
+  return s3;
 }
 
 START_TEST(test_memcpy_normal_string) {
@@ -197,18 +197,266 @@ START_TEST(test_memcpy_binary_data) {
 }
 END_TEST
 
-Suite *s21_memcpy_test(void) {
-  Suite *s = suite_create("s21_memcpy");
+Suite *suite_memspy(void) {
+  Suite *s4 = suite_create("s21_memcpy");
   TCase *tc_memcpy = tcase_create("case_s21_memcpy");
 
-  tcase_add_test(tc_memcpy, test_memcpy_normal_string);
+  tcase_add_test(tc_memcpy, test_memset);
   tcase_add_test(tc_memcpy, test_memcpy_without_overlap);
   tcase_add_test(tc_memcpy, test_memcpy_zero_bytes);
   tcase_add_test(tc_memcpy, test_memcpy_large_data);
   tcase_add_test(tc_memcpy, test_memcpy_binary_data);
 
-  suite_add_tcase(s, tc_memcpy);
-  return s;
+  suite_add_tcase(s4, tc_memcpy);
+  return s4;
+}
+
+START_TEST(memset_basic_fill) {
+  char buffer[10];
+  s21_memset(buffer, 'A', sizeof(buffer));
+  for (size_t i = 0; i < sizeof(buffer); i++) {
+    ck_assert_msg(buffer[i] == 'A', "Buffer[%zu] != 'A'", i);
+  }
+}
+END_TEST
+
+START_TEST(memset_zero_length) {
+  char buffer[10] = "1234567890";
+  s21_memset(buffer, 'A', 0);
+  ck_assert_str_eq(buffer, "1234567890");
+}
+END_TEST
+
+START_TEST(memset_partial_fill) {
+  char buffer[10] = "1234567890";
+  s21_memset(buffer, 'B', 5);
+  ck_assert_str_eq(buffer, "BBBBB67890");
+}
+END_TEST
+
+START_TEST(memset_various_chars) {
+  char buffer[5];
+  s21_memset(buffer, '\0', sizeof(buffer));
+  for (size_t i = 0; i < sizeof(buffer); i++) {
+    ck_assert_msg(buffer[i] == '\0', "Buffer[%zu] != '\\0'", i);
+  }
+  s21_memset(buffer, 'Z', sizeof(buffer));
+  for (size_t i = 0; i < sizeof(buffer); i++) {
+    ck_assert_msg(buffer[i] == 'Z', "Buffer[%zu] != 'Z'", i);
+  }
+}
+END_TEST
+
+START_TEST(memset_large_buffer) {
+  size_t size = 1024;  // Используем меньший размер для экономии памяти
+  char *buffer = (char *)malloc(size);
+  memset(buffer, 'C', size);
+  for (size_t i = 0; i < size; i++) {
+    ck_assert_msg(buffer[i] == 'C', "Buffer[%zu] != 'C'", i);
+  }
+  free(buffer);
+}
+END_TEST
+
+Suite *suite_memset(void) {
+  Suite *s5 = suite_create("s21_memset");
+  TCase *tc_memset = tcase_create("case_s21_memset");
+
+  tcase_add_test(tc_memset, memset_basic_fill);
+  tcase_add_test(tc_memset, memset_zero_length);
+  tcase_add_test(tc_memset, memset_partial_fill);
+  tcase_add_test(tc_memset, memset_various_chars);
+  tcase_add_test(tc_memset, memset_large_buffer);
+
+  suite_add_tcase(s5, tc_memcpy);
+  return s5;
+}
+
+// Тест на нахождение символа в начале строки
+START_TEST(strchr_start) {
+  char str[] = "Test string";
+  int ch = 'T';
+  char *result = s21_strchr(str, ch);
+  char *expected = strchr(str, ch);
+  ck_assert_ptr_eq(result, expected);  // Сравнивает два указателя на равенство.
+  ck_assert_str_eq(
+      result, expected);  // Сравнивает две строки на идентичность содержимого.
+}
+END_TEST
+
+// Тест на нахождение символа в середине строки
+START_TEST(strchr_middle) {
+  char str[] = "Example string";
+  int ch = 'm';
+  char *result = s21_strchr(str, ch);
+  char *expected = strchr(str, ch);
+  ck_assert_ptr_eq(result, expected);
+  ck_assert_str_eq(result, expected);
+}
+END_TEST
+
+// Тест на отсутствие символа в строке
+START_TEST(strchr_not_found) {
+  char str[] = "Another example";
+  int ch = 'z';
+  char *result = s21_strchr(str, ch);
+  ck_assert_ptr_eq(result, NULL);
+}
+END_TEST
+
+// Тест на поиск нулевого символа (терминатор строки)
+START_TEST(strchr_null_char) {
+  char str[] = "Null terminator test";
+  int ch = '\0';
+  char *result = s21_strchr(str, ch);
+  char *expected = strchr(str, ch);
+  ck_assert_ptr_eq(result, expected);
+  ck_assert_str_eq(result, expected);
+}
+END_TEST
+
+Suite *suite_strchr(void) {
+  Suite *s6 = suite_create("s21_strchr");
+  TCase *tc_strchr = tcase_create("case_s21_strchr");
+
+  tcase_add_test(tc_strchr, strchr_start);
+  tcase_add_test(tc_strchr, strchr_middle);
+  tcase_add_test(tc_strchr, strchr_not_found);
+  tcase_add_test(tc_strchr, strchr_null_char);
+
+  suite_add_tcase(s6, tc_strchr);
+  return s6;
+}
+
+// Тест на полное сравнение идентичных строк
+START_TEST(strncmp_full_equal) {
+  const char *str1 = "abcdef";
+  const char *str2 = "abcdef";
+  ck_assert_int_eq(s21_strncmp(str1, str2, strlen(str1)), 0);
+}
+END_TEST
+
+// Тест на частичное сравнение идентичных строк
+START_TEST(strncmp_partial_equal) {
+  const char *str1 = "abcdef";
+  const char *str2 = "abcdef";
+  ck_assert_int_eq(s21_strncmp(str1, str2, 3),
+                   0);  // Сравниваем только первые 3 символа
+}
+END_TEST
+
+// Тест на сравнение с длиной n равной 0
+START_TEST(strncmp_zero_length) {
+  const char *str1 = "abcdef";
+  const char *str2 = "xyz";
+  ck_assert_int_eq(s21_strncmp(str1, str2, 0),
+                   0);  // Сравнение с n=0 должно всегда возвращать 0
+}
+END_TEST
+
+// Тест на сравнение строк, когда n больше длины строк
+START_TEST(strncmp_length_exceeds) {
+  const char *str1 = "abc";
+  const char *str2 = "abc";
+  ck_assert_int_eq(s21_strncmp(str1, str2, 10),
+                   0);  // n больше длины строк, строки равны
+}
+END_TEST
+
+// Тест на сравнение строк различной длины
+START_TEST(strncmp_diff_length) {
+  const char *str1 = "abc";
+  const char *str2 = "abcd";
+  int result = s21_strncmp(str1, str2, strlen(str2));
+  ck_assert(result < 0);  // str1 короче str2, должно быть < 0
+}
+END_TEST
+
+// Тест на сравнение непустой строки с пустой при n=0
+START_TEST(strncmp_empty_vs_nonempty) {
+  const char *str1 = "";
+  const char *str2 = "abc";
+  ck_assert_int_eq(s21_strncmp(str1, str2, 0),
+                   0);  // Сравнение с n=0, ожидается 0
+}
+END_TEST
+
+Suite *suite_strncmp(void) {
+  Suite *s7 = suite_create("s21_strncmp");
+  TCase *tc_strncmp = tcase_create("case_s21_strncmp");
+
+  tcase_add_test(tc_strncmp, strncmp_full_equal);
+  tcase_add_test(tc_strncmp, strncmp_partial_equal);
+  tcase_add_test(tc_strncmp, strncmp_zero_length);
+  tcase_add_test(tc_strncmp, strncmp_length_exceeds);
+  tcase_add_test(tc_strncmp, strncmp_diff_length);
+  tcase_add_test(tc_strncmp, strncmp_empty_vs_nonempty);
+
+  suite_add_tcase(s7, tc_strncmp);
+  return s7;
+}
+
+// Тест на нахождение первого вхождения одного из символов str2 в str1
+START_TEST(strpbrk_found) {
+  const char *str1 = "Example string";
+  const char *str2 = "xyzs";
+  char *result = s21_strpbrk(str1, str2);
+  ck_assert_ptr_nonnull(result);
+  ck_assert_ptr_eq(result, strpbrk(str1, str2));
+  ck_assert_char_eq(*result, 's');
+}
+END_TEST
+
+// Тест, когда символы из str2 не найдены в str1
+START_TEST(strpbrk_not_found) {
+  const char *str1 = "Hello, world!";
+  const char *str2 = "xyz";
+  char *result = s21_strpbrk(str1, str2);
+  ck_assert_ptr_null(result);
+}
+END_TEST
+
+// Тест с пустой строкой str1
+START_TEST(strpbrk_empty_str1) {
+  const char *str1 = "";
+  const char *str2 = "abc";
+  char *result = s21_strpbrk(str1, str2);
+  ck_assert_ptr_null(result);
+}
+END_TEST
+
+// Тест с пустой строкой str2
+START_TEST(strpbrk_empty_str2) {
+  const char *str1 = "Hello";
+  const char *str2 = "";
+  char *result = s21_strpbrk(str1, str2);
+  ck_assert_ptr_null(result);
+}
+END_TEST
+
+// Тест на нахождение первого вхождения символа из str2, когда str2 длиннее str1
+START_TEST(strpbrk_long_str2) {
+  const char *str1 = "abc";
+  const char *str2 = "abcdefghijklmnopqrstuvwxyz";
+  char *result = s21_strpbrk(str1, str2);
+  ck_assert_ptr_nonnull(result);
+  ck_assert_ptr_eq(result, strpbrk(str1, str2));
+  ck_assert_char_eq(*result, 'a');
+}
+END_TEST
+
+Suite *suite_strpbrk(void) {
+  Suite *s8 = suite_create("s21_strpbrk");
+  TCase *tc_strpbrk = tcase_create("case_s21_strncmp");
+
+  tcase_add_test(tc_strncmp, strpbrk_found);
+  tcase_add_test(tc_strncmp, strpbrk_not_found);
+  tcase_add_test(tc_strncmp, strpbrk_empty_str1);
+  tcase_add_test(tc_strncmp, strpbrk_empty_str2);
+  tcase_add_test(tc_strncmp, strpbrk_long_str2);
+
+  suite_add_tcase(s8, tc_strpbrk);
+  return s8;
 }
 
 int main(void) {
@@ -216,9 +464,14 @@ int main(void) {
   SRunner *sr = srunner_create(NULL);  //  Создаем объект для запуска тестов
 
   srunner_add_suite(sr, suite_strlen());
-  srunner_add_suite(sr, s21_memcmp_test());
-  srunner_add_suite(sr, s21_memchr_test());
-  srunner_add_suite(sr, s21_memcpy_test());
+  srunner_add_suite(sr, suite_memcmp());
+  srunner_add_suite(sr, suite_memchr());
+  srunner_add_suite(sr, suite_memspy());
+  srunner_add_suite(sr, suite_memset());
+  srunner_add_suite(sr, suite_strchr());
+  srunner_add_suite(sr, suite_strncmp());
+  srunner_add_suite(sr, suite_strpbrk());
+
   srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
   number_failed =
       srunner_ntests_failed(sr);  // Получаем количество проваленных тестов
