@@ -36,6 +36,7 @@ void *s21_memchr(const void *str, int c, size_t count);
 // 1 Поиск символа в блоке памяти
 char *s21_strchr(const char *str, int c);
 // 6 strchr	Найти первое вхождение символа в строке.
+size_t s21_strcspn(const char *str1, const char *str2);
 // 9 strcspn	Выполняет поиск первого вхождения в строку str1 любого из
 // символов строки str2, и возвращает количество символов до найденного первого
 // вхождения.
