@@ -269,7 +269,7 @@ Suite *suite_memset(void) {
   tcase_add_test(tc_memset, memset_various_chars);
   tcase_add_test(tc_memset, memset_large_buffer);
 
-  suite_add_tcase(s5, tc_memcpy);
+  suite_add_tcase(s5, tc_memset);
   return s5;
 }
 
@@ -377,8 +377,7 @@ END_TEST
 START_TEST(strncmp_empty_vs_nonempty) {
   const char *str1 = "";
   const char *str2 = "abc";
-  ck_assert_int_eq(s21_strncmp(str1, str2, 0),
-                   0);  // Сравнение с n=0, ожидается 0
+  ck_assert_int_eq(s21_strncmp(str1, str2, 0), 0);  // Сравнение с n=0, ожидается 0
 }
 END_TEST
 
@@ -500,7 +499,7 @@ Suite *suite_strrchr(void) {
   tcase_add_test(tc_strrchr, strrchr_empty_string);
   tcase_add_test(tc_strrchr, strrchr_only_char);
 
-  suite_add_tcase(s9, ts_strrchr);
+  suite_add_tcase(s9, tc_strrchr);
   return s9;
 }
 
@@ -523,20 +522,20 @@ END_TEST
 // Тест на пустую подстроку
 START_TEST(strstr_empty_needle) {
   char *haystack = "Non-empty string";
-  ck_assert_ptr_eq(s21_strstr(haystack, ""),
-                   haystack);  // Сравниваем с началом haystack
+  ck_assert_ptr_eq(s21_strstr(haystack, ""), haystack);  
+  // Сравниваем с началом haystack
 }
 END_TEST
 
 // Тест на полностью пустые строки
 START_TEST(strstr_all_empty) {
-  ck_assert_ptr_eq(s21_strstr("", ""),
-                   "");  // Ожидаем указатель на начало haystack
+  ck_assert_ptr_eq(s21_strstr("", ""), "");  
+  // Ожидаем указатель на начало haystack
 }
 END_TEST
 
 // Тест на частично совпадающую подстроку
-START_TEST(sstrstr_partial_match) {
+START_TEST(strstr_partial_match) {
   char *haystack = "Partial match test";
   char *needle = "testy";
   ck_assert_ptr_eq(s21_strstr(haystack, needle), strstr(haystack, needle));
@@ -638,7 +637,7 @@ Suite *suite_strtok(void) {
   tcase_add_test(tc_strtok, strtok_empty_delimiters);
   tcase_add_test(tc_strtok, strtok_consecutive_delimiters);
 
-  suite_add_tcase(s11, ts_strtok);
+  suite_add_tcase(s11, tc_strtok);
   return s11;
 }
 
@@ -683,8 +682,7 @@ END_TEST
 START_TEST(strncat_zero_length) {
   char dest[50] = "Zero length ";
   const char src[] = "ignored";
-  s21_strncat(dest, src,
-              0);  // n равно 0, поэтому src не должен быть конкатенирован
+  s21_strncat(dest, src, 0);  // n равно 0, поэтому src не должен быть конкатенирован
   ck_assert_str_eq(dest, "Zero length ");
 }
 END_TEST
@@ -693,8 +691,8 @@ END_TEST
 // тестируется)
 START_TEST(strncat_overlap) {
   char buffer[50] = "Overlap";
-  s21_strncat(buffer, buffer,
-              5);  // Попытка объединением строк buffer самого с собой
+  s21_strncat(buffer, buffer, 5);  
+  // Попытка объединением строк buffer самого с собой
   // Примечание: Ожидаемое поведение не определено, этот тест иллюстрирует общее
   // неправильное использование. ck_assert_*() зависит от конкретного поведения
   // вашей реализации.
@@ -712,7 +710,7 @@ Suite *suite_strncat(void) {
   tcase_add_test(tc_strncat, strncat_zero_length);
   tcase_add_test(tc_strncat, strncat_overlap);
 
-  suite_add_tcase(s12, ts_strncat);
+  suite_add_tcase(s12, tc_strncat);
   return s12;
 }
 
@@ -731,6 +729,7 @@ int main(void) {
   srunner_add_suite(sr, suite_strrchr());
   srunner_add_suite(sr, suite_strstr());
   srunner_add_suite(sr, suite_strtok());
+  srunner_add_suite(sr, suite_strncat());
 
   srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
   number_failed =
