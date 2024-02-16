@@ -4,7 +4,7 @@
 
 #include "s21_string.h"
 
-START_TEST(test_s21_strlen) {
+START_TEST(test_strlen) {
   const char str1[] = "";
   const char str2[] = "Hello";
   const char str3[] = "A";
@@ -31,12 +31,13 @@ END_TEST
 Suite *suite_strlen(void) {
   Suite *s1 = suite_create("s21_strlen");
   TCase *tc_strlen = tcase_create("case_s21_strlen");
-  tcase_add_test(tc_strlen, test_s21_strlen);
+  tcase_add_test(tc_strlen, test_strlen);
   suite_add_tcase(s1, tc_strlen);
   return s1;
 }
 
-START_TEST(s21_memcmp_1) {
+// Тест на сравнение начала строк
+START_TEST(memcmp_compare_start) {
   size_t n1 = 3;
   char b1[1024] = "Hello,";
   char b11[1024] = "Hello,";
@@ -44,16 +45,16 @@ START_TEST(s21_memcmp_1) {
   ck_assert_int_eq(memcmp(b1, str_1_2, n1), s21_memcmp(b11, str_1_2, n1));
 }
 END_TEST
-
-START_TEST(s21_memcmp_2) {
+// Тест на сравнение строк с одним различающимся символом
+START_TEST(memcmp_minimal_difference) {
   size_t n2 = 4;
   char b2[1024] = "1234";
   char str_2_2[1024] = "1235";
   ck_assert_int_lt(s21_memcmp(b2, str_2_2, n2), 0);
 }
 END_TEST
-
-START_TEST(s21_memcmp_3) {
+// Тест на сравнение одинаковых участков в строках
+START_TEST(memcmp_identical_parts) {
   size_t n3 = 4;
   char b3[1024] = "SB SB SB $! ";
   char str_3_3[1024] = "SB SB SB $! ";
@@ -61,16 +62,16 @@ START_TEST(s21_memcmp_3) {
                    s21_memcmp(str_3_3, str_3_3 + 7, n3));
 }
 END_TEST
-
-START_TEST(s21_memcmp_4) {
+// Тест на сравнение строк с учётом регистра
+START_TEST(memcmp_case_sensitivity) {
   size_t n4 = 6;
   char b4[1024] = "abcdef";
   char str_4_4[1024] = "abcDef";
   ck_assert_int_gt(s21_memcmp(b4, str_4_4, n4), 0);
 }
 END_TEST
-
-START_TEST(s21_memcmp_5) {
+// Тест на сравнение строк с нулевыми символами
+START_TEST(memcmp_zero_chars) {
   size_t n5 = 8;
   char b5[1024] = "a\0b\0c\0";
   char b55[1024] = "a\0b\0c\0";
@@ -82,18 +83,18 @@ Suite *suite_memcmp(void) {
   Suite *s2 = suite_create("s21_memcmp");
   TCase *tc_memcmp = tcase_create("case_s21_memcmp");
 
-  tcase_add_test(tc_memcmp, s21_memcmp_1);
-  tcase_add_test(tc_memcmp, s21_memcmp_2);
-  tcase_add_test(tc_memcmp, s21_memcmp_3);
-  tcase_add_test(tc_memcmp, s21_memcmp_4);
-  tcase_add_test(tc_memcmp, s21_memcmp_5);
+  tcase_add_test(tc_memcmp, memcmp_compare_start);
+  tcase_add_test(tc_memcmp, memcmp_minimal_difference);
+  tcase_add_test(tc_memcmp, memcmp_identical_parts);
+  tcase_add_test(tc_memcmp, memcmp_case_sensitivity);
+  tcase_add_test(tc_memcmp, memcmp_zero_chars);
 
   suite_add_tcase(s2, tc_memcmp);
 
   return s2;
 }
 
-START_TEST(test_memchr_found) {
+START_TEST(memchr_found) {
   const char str[] = "Hello, world!";
   int c = 'w';
   ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
@@ -106,7 +107,7 @@ END_TEST
 // функции работают с одинаковым диапазоном памяти при сравнении, минимизируя
 // влияние внешних факторов на результаты теста.
 
-START_TEST(test_memchr_not_found) {
+START_TEST(memchr_not_found) {
   const char str[] = "Hello, world!";
   int c = 'x';
   ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
@@ -114,14 +115,14 @@ START_TEST(test_memchr_not_found) {
 }
 END_TEST
 
-START_TEST(test_memchr_zero_length) {
+START_TEST(memchr_zero_length) {
   const char str[] = "Hello, world!";
   int c = 'H';
   ck_assert_ptr_eq(s21_memchr(str, c, 0), memchr(str, c, 0));
 }
 END_TEST
 
-START_TEST(test_memchr_first_char) {
+START_TEST(memchr_first_char) {
   const char str[] = "Hello, world!";
   int c = 'H';
   ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
@@ -129,7 +130,7 @@ START_TEST(test_memchr_first_char) {
 }
 END_TEST
 
-START_TEST(test_memchr_last_char) {
+START_TEST(memchr_last_char) {
   const char str[] = "Hello, world!";
   int c = '!';
   ck_assert_ptr_eq(s21_memchr(str, c, strlen(str)),
@@ -141,17 +142,17 @@ Suite *suite_memchr(void) {
   Suite *s3 = suite_create("s21_memchr");
   TCase *tc_memchr = tcase_create("case_s21_memchr");
 
-  tcase_add_test(tc_memchr, test_memchr_found);
-  tcase_add_test(tc_memchr, test_memchr_not_found);
-  tcase_add_test(tc_memchr, test_memchr_zero_length);
-  tcase_add_test(tc_memchr, test_memchr_first_char);
-  tcase_add_test(tc_memchr, test_memchr_last_char);
+  tcase_add_test(tc_memchr, memchr_found);
+  tcase_add_test(tc_memchr, memchr_not_found);
+  tcase_add_test(tc_memchr, memchr_zero_length);
+  tcase_add_test(tc_memchr, memchr_first_char);
+  tcase_add_test(tc_memchr, memchr_last_char);
 
   suite_add_tcase(s3, tc_memchr);
   return s3;
 }
 
-START_TEST(test_memcpy_normal_string) {
+START_TEST(memcpy_normal_string) {
   char src[] = "Test string";
   char dest[20];
   s21_memcpy(dest, src,
@@ -160,7 +161,7 @@ START_TEST(test_memcpy_normal_string) {
 }
 END_TEST
 
-START_TEST(test_memcpy_without_overlap) {
+START_TEST(memcpy_without_overlap) {
   char src[] = "Example text";
   char dest[20];
   s21_memcpy(dest, src,
@@ -169,7 +170,7 @@ START_TEST(test_memcpy_without_overlap) {
 }
 END_TEST
 
-START_TEST(test_memcpy_zero_bytes) {
+START_TEST(memcpy_zero_bytes) {
   char src[] = "Non-empty";
   char dest[20] = "Initial";
   s21_memcpy(dest, src, 0);  // Копирование 0 байтов
@@ -177,7 +178,7 @@ START_TEST(test_memcpy_zero_bytes) {
 }
 END_TEST
 
-START_TEST(test_memcpy_large_data) {
+START_TEST(memcpy_large_data) {
   char src[1024];
   char dest[1024];
   // Инициализация src некоторыми данными
@@ -189,7 +190,7 @@ START_TEST(test_memcpy_large_data) {
 }
 END_TEST
 
-START_TEST(test_memcpy_binary_data) {
+START_TEST(memcpy_binary_data) {
   unsigned char src[] = {0xDE, 0xAD, 0xBE, 0xEF};
   unsigned char dest[4];
   s21_memcpy(dest, src, sizeof(src));
@@ -201,11 +202,11 @@ Suite *suite_memspy(void) {
   Suite *s4 = suite_create("s21_memcpy");
   TCase *tc_memcpy = tcase_create("case_s21_memcpy");
 
-  tcase_add_test(tc_memcpy, test_memset);
-  tcase_add_test(tc_memcpy, test_memcpy_without_overlap);
-  tcase_add_test(tc_memcpy, test_memcpy_zero_bytes);
-  tcase_add_test(tc_memcpy, test_memcpy_large_data);
-  tcase_add_test(tc_memcpy, test_memcpy_binary_data);
+  tcase_add_test(tc_memcpy, memset);
+  tcase_add_test(tc_memcpy, memcpy_without_overlap);
+  tcase_add_test(tc_memcpy, memcpy_zero_bytes);
+  tcase_add_test(tc_memcpy, memcpy_large_data);
+  tcase_add_test(tc_memcpy, memcpy_binary_data);
 
   suite_add_tcase(s4, tc_memcpy);
   return s4;
@@ -490,7 +491,7 @@ START_TEST(strrchr_only_char) {
 END_TEST
 
 Suite *suite_strrchr(void) {
-  Suite *s8 = suite_create("s21_strrchrk");
+  Suite *s9 = suite_create("s21_strrchrk");
   TCase *tc_strrchr = tcase_create("case_s21_strrchrp");
 
   tcase_add_test(tc_strrchr, strrchr_last_occurrence);
@@ -499,8 +500,220 @@ Suite *suite_strrchr(void) {
   tcase_add_test(tc_strrchr, strrchr_empty_string);
   tcase_add_test(tc_strrchr, strrchr_only_char);
 
-  suite_add_tcase(s8, strrchr);
-  return s8;
+  suite_add_tcase(s9, ts_strrchr);
+  return s9;
+}
+
+// Тест на поиск подстроки внутри строки
+START_TEST(strstr_normal) {
+  char *haystack = "The quick brown fox jumps over the lazy dog";
+  char *needle = "brown";
+  ck_assert_ptr_eq(s21_strstr(haystack, needle), strstr(haystack, needle));
+}
+END_TEST
+
+// Тест на отсутствие подстроки
+START_TEST(strstr_not_found) {
+  char *haystack = "Simple string for testing";
+  char *needle = "complex";
+  ck_assert_ptr_eq(s21_strstr(haystack, needle), strstr(haystack, needle));
+}
+END_TEST
+
+// Тест на пустую подстроку
+START_TEST(strstr_empty_needle) {
+  char *haystack = "Non-empty string";
+  ck_assert_ptr_eq(s21_strstr(haystack, ""),
+                   haystack);  // Сравниваем с началом haystack
+}
+END_TEST
+
+// Тест на полностью пустые строки
+START_TEST(strstr_all_empty) {
+  ck_assert_ptr_eq(s21_strstr("", ""),
+                   "");  // Ожидаем указатель на начало haystack
+}
+END_TEST
+
+// Тест на частично совпадающую подстроку
+START_TEST(sstrstr_partial_match) {
+  char *haystack = "Partial match test";
+  char *needle = "testy";
+  ck_assert_ptr_eq(s21_strstr(haystack, needle), strstr(haystack, needle));
+}
+END_TEST
+
+// Тест на поиск подстроки в пустой строке
+START_TEST(strstr_empty_haystack_nonempty_needle) {
+  char *haystack = "";
+  char *needle = "any";
+  char *result = s21_strstr(haystack, needle);
+  ck_assert_ptr_null(result);
+}
+END_TEST
+
+Suite *suite_strstr(void) {
+  Suite *s10 = suite_create("s21_strstr");
+  TCase *tc_strstr = tcase_create("case_s21_strstr");
+
+  tcase_add_test(tc_strstr, strstr_normal);
+  tcase_add_test(tc_strstr, strstr_not_found);
+  tcase_add_test(tc_strstr, strstr_empty_needle);
+  tcase_add_test(tc_strstr, strstr_all_empty);
+  tcase_add_test(tc_strstr, strstr_partial_match);
+  tcase_add_test(tc_strstr, strstr_empty_haystack_nonempty_needle);
+
+  suite_add_tcase(s10, tc_strstr);
+  return s10;
+}
+
+// Базовый тест на разделение строки
+START_TEST(strtok_basic) {
+  char str[] = "This,is a.test";
+  const char delim[] = ", .";
+  char *token = s21_strtok(str, delim);
+  ck_assert_str_eq(token, "This");
+  token = s21_strtok(NULL, delim);
+  ck_assert_str_eq(token, "is");
+  token = s21_strtok(NULL, delim);
+  ck_assert_str_eq(token, "a");
+  token = s21_strtok(NULL, delim);
+  ck_assert_str_eq(token, "test");
+  token = s21_strtok(NULL, delim);
+  ck_assert_ptr_null(token);
+}
+END_TEST
+
+// Тест на разделение строки без разделителей
+START_TEST(strtok_no_delimiters) {
+  char str[] = "NoDelimitersHere";
+  const char delim[] = ", .";
+  char *token = s21_strtok(str, delim);
+  ck_assert_str_eq(token, "NoDelimitersHere");
+  token = s21_strtok(NULL, delim);
+  ck_assert_ptr_null(token);
+}
+END_TEST
+
+// Тест на разделение пустой строки
+START_TEST(strtok_empty_string) {
+  char str[] = "";
+  const char delim[] = ", .";
+  char *token = s21_strtok(str, delim);
+  ck_assert_ptr_null(token);
+}
+END_TEST
+
+// Тест на разделение строки с пустым набором разделителей
+START_TEST(strtok_empty_delimiters) {
+  char str[] = "Normal string";
+  const char delim[] = "";
+  char *token = s21_strtok(str, delim);
+  ck_assert_str_eq(token, "Normal string");
+  token = s21_strtok(NULL, delim);
+  ck_assert_ptr_null(token);
+}
+END_TEST
+
+// Тест на разделение строки с подряд идущими разделителями
+START_TEST(strtok_consecutive_delimiters) {
+  char str[] = "Consecutive,,,delimiters";
+  const char delim[] = ",";
+  char *token = s21_strtok(str, delim);
+  ck_assert_str_eq(token, "Consecutive");
+  token = s21_strtok(NULL, delim);
+  ck_assert_str_eq(token, "delimiters");
+  token = s21_strtok(NULL, delim);
+  ck_assert_ptr_null(token);
+}
+END_TEST
+
+Suite *suite_strtok(void) {
+  Suite *s11 = suite_create("s21_strtok");
+  TCase *tc_strtok = tcase_create("case_s21_strtok");
+
+  tcase_add_test(tc_strtok, strtok_basic);
+  tcase_add_test(tc_strtok, strtok_no_delimiters);
+  tcase_add_test(tc_strtok, strtok_empty_string);
+  tcase_add_test(tc_strtok, strtok_empty_delimiters);
+  tcase_add_test(tc_strtok, strtok_consecutive_delimiters);
+
+  suite_add_tcase(s11, ts_strtok);
+  return s11;
+}
+
+// Базовая объединением строк с ограниченной длиной
+START_TEST(strncat_basic_concat) {
+  char dest[50] = "Initial ";
+  const char src[] = "concatenation";
+  size_t n = 5;  // Ограничение до первых 5 символов src
+  s21_strncat(dest, src, n);
+  ck_assert_str_eq(dest, "Initial conc");
+}
+END_TEST
+
+// Объединением строк, уважающая нулевой терминатор строки
+START_TEST(strncat_full_concat) {
+  char dest[50] = "Full ";
+  const char src[] = "concatenation";
+  s21_strncat(dest, src, strlen(src));  // Использование полной длины src
+  ck_assert_str_eq(dest, "Full concatenation");
+}
+END_TEST
+
+// Попытка объединением пустой строки
+START_TEST(strncat_empty_src) {
+  char dest[50] = "Empty source ";
+  const char src[] = "";
+  s21_strncat(dest, src, 5);  // Попытка с 5 символами пустого src
+  ck_assert_str_eq(dest, "Empty source ");
+}
+END_TEST
+
+// Объединением строки в пустую целевую строку
+START_TEST(strncat_to_empty_dest) {
+  char dest[50] = "";
+  const char src[] = "Non-empty source";
+  s21_strncat(dest, src, strlen(src));  // Полная длина не пустого src
+  ck_assert_str_eq(dest, "Non-empty source");
+}
+END_TEST
+
+// Объединением строк нулевой длины
+START_TEST(strncat_zero_length) {
+  char dest[50] = "Zero length ";
+  const char src[] = "ignored";
+  s21_strncat(dest, src,
+              0);  // n равно 0, поэтому src не должен быть конкатенирован
+  ck_assert_str_eq(dest, "Zero length ");
+}
+END_TEST
+
+// Объединением строк с перекрытием строк (неопределённое поведение, но часто
+// тестируется)
+START_TEST(strncat_overlap) {
+  char buffer[50] = "Overlap";
+  s21_strncat(buffer, buffer,
+              5);  // Попытка объединением строк buffer самого с собой
+  // Примечание: Ожидаемое поведение не определено, этот тест иллюстрирует общее
+  // неправильное использование. ck_assert_*() зависит от конкретного поведения
+  // вашей реализации.
+}
+END_TEST
+
+Suite *suite_strncat(void) {
+  Suite *s12 = suite_create("s21_strncat");
+  TCase *tc_strncat = tcase_create("case_s21_strncat");
+
+  tcase_add_test(tc_strncat, strncat_basic_concat);
+  tcase_add_test(tc_strncat, strncat_full_concat);
+  tcase_add_test(tc_strncat, strncat_empty_src);
+  tcase_add_test(tc_strncat, strncat_to_empty_dest);
+  tcase_add_test(tc_strncat, strncat_zero_length);
+  tcase_add_test(tc_strncat, strncat_overlap);
+
+  suite_add_tcase(s12, ts_strncat);
+  return s12;
 }
 
 int main(void) {
@@ -516,6 +729,8 @@ int main(void) {
   srunner_add_suite(sr, suite_strncmp());
   srunner_add_suite(sr, suite_strpbrk());
   srunner_add_suite(sr, suite_strrchr());
+  srunner_add_suite(sr, suite_strstr());
+  srunner_add_suite(sr, suite_strtok());
 
   srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
   number_failed =
