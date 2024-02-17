@@ -736,7 +736,7 @@ int main(void) {
   // srunner_add_suite(sr, suite_strtok());
   // srunner_add_suite(sr, suite_strncat());
 
-  srunner_run_all(sr, CK_NORMAL);  // Запускаем все тесты в сюите
+  srunner_run_all(sr, CK_SUBUNIT);  // Запускаем все тесты в сюите
   number_failed =
       srunner_ntests_failed(sr);  // Получаем количество проваленных тестов
   srunner_free(sr);  // Освобождаем ресурсы
