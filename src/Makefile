@@ -1,12 +1,11 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 GCOV_FLAGS = -fprofile-arcs -ftest-coverage
-SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_strncmp.c s21_strchr.c main_test.c add_memory.c
+SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_strncmp.c s21_strchr.c add_memory.c
 OBJ = $(SOURCES:.c=.o)
 TEST_LIBS = s21_main_test.c
 LIB_NAME = libs21_string.a
 EXEC = test
-TEST2_EXEC = main_test
 
 LIBS=-lcheck
 OPEN = open
@@ -31,10 +30,6 @@ test: $(TEST_LIBS)
 	rm -f $(OBJ) $(LIB_NAME)
 	./test
 
-$(TEST2_EXEC): main_test.c $(LIB_NAME)
-	$(CC) $(CFLAGS) -o $@ main_test.c -L. -ls21_string
-	rm -f $(OBJ) $(LIB_NAME)
-
 gcov_report: clean s21_string.a test
 	mkdir -p coverage
 	./$(EXEC)
@@ -46,5 +41,5 @@ gcov_report: clean s21_string.a test
 rebuild: clean all
 
 clean:
-	rm -f $(OBJ) $(EXEC) $(TEST2_EXEC) $(LIB_NAME) *.gcda *.gcno *.gcov *.info
+	rm -f $(OBJ) $(EXEC) $(LIB_NAME) *.gcda *.gcno *.gcov *.info
 	rm -rf coverage

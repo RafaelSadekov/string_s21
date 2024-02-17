@@ -1,6 +1,4 @@
-#include <check.h>
-#include <stdlib.h>
-#include <string.h>
+#include "test_suite.h"
 
 START_TEST(test_strlen) {
   const char str1[] = "";
