@@ -40,6 +40,7 @@ size_t s21_strcspn(const char *str1, const char *str2);
 // 9 strcspn	Выполняет поиск первого вхождения в строку str1 любого из
 // символов строки str2, и возвращает количество символов до найденного первого
 // вхождения.
+char *s21_strpbrk(const char *str1, const char *str2);
 // 12 strpbrk	Выполняет поиск первого вхождения в строку str1
 // любого из символов строки str2, и возвращает указатель на  найденный символ.
 char *s21_strrchr(const char *str, int c);
@@ -47,7 +48,9 @@ char *s21_strrchr(const char *str, int c);
 // strspn	Поиск символов строки str2 в строке str1. Возвращает длину
 // начального участка строки str1, который состоит только из символов строки
 // str2.
+char *s21_strstr(const char *haystack, const char *needle);
 // 14 strstr	 Функция ищет первое вхождение подстроки str2 в строке str1.
+char *s21_strtok(char *str, const char *delim);
 // 15 strtok	Поиск лексем в строке, используя разделители.
 
 /* Другие */
