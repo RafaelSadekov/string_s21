@@ -1,0 +1,17 @@
+#test memcmp_compare_start
+  size_t n1 = 3;
+  char b1[1024] = "Hello,";
+  char b11[1024] = "Hello,";
+  char str_1_2[1024] = "Hello, World!";
+  ck_assert_int_eq(memcmp(b1, str_1_2, n1), s21_memcmp(b11, str_1_2, n1));
+
+
+
+// Тест на сравнение строк с одним различающимся символом
+#suite memcmp_suite
+memcmp_minimal_difference
+
+  size_t n2 = 4;
+  char b2[1024] = "1234";
+  char str_2_2[1024] = "1235";
+  ck_assert_int_lt(s21_memcmp(b2, str_2_2, n2), 0);
