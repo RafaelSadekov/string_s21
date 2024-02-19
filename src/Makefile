@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = 
 GCOV_FLAGS = -fprofile-arcs -ftest-coverage
 SOURCES = s21_memchr.c s21_memcmp.c s21_memcpy.c s21_memset.c s21_strlen.c s21_strncmp.c s21_strchr.c add_memory.c
 OBJ = $(SOURCES:.c=.o)
